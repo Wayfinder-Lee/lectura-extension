@@ -1,0 +1,6 @@
+.DS_Store
+.claude/
+scripts/
+*.csv
+*.zip
+icons/lectura-logo.png

@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LLM 设置教程 — LECTURA</title>
+  <link rel="stylesheet" href="settings.css">
+  <style>
+    .step { margin-bottom: 24px; }
+    .step h3 { color: #1a1a2e; margin-bottom: 8px; }
+    .step p, .step li { color: #555; line-height: 1.7; font-size: 14px; }
+    .step ol { padding-left: 18px; }
+    .step code { background: #f0f0f5; padding: 2px 6px; border-radius: 4px; font-size: 13px; }
+    .step img { max-width: 100%; border-radius: 8px; border: 1px solid #e0e0e0; margin: 8px 0; }
+    .highlight-box { background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px; padding: 12px 16px; margin: 12px 0; }
+    .highlight-box.warn { background: #fffbeb; border-color: #fde68a; }
+    .copy-btn { display: inline-block; padding: 4px 10px; font-size: 12px; border: 1px solid #ccc; border-radius: 4px; cursor: pointer; margin-left: 6px; }
+  </style>
+</head>
+<body>
+  <div class="settings-container">
+    <header class="settings-header">
+      <h1>📖 LECTURA LLM 设置教程</h1>
+      <p class="subtitle">以 DeepSeek 为例，国内可直接使用，注册即送免费额度</p>
+    </header>
+
+    <section class="settings-section">
+      <h2>为什么选择 DeepSeek？</h2>
+      <ul style="padding-left:18px;color:#555;line-height:1.8;">
+        <li>🇨🇳 <strong>国内可直接访问</strong>，无需代理</li>
+        <li>💰 <strong>注册送免费额度</strong>，足够日常查词使用</li>
+        <li>📊 <strong>API 完全兼容 OpenAI 格式</strong></li>
+        <li>⚡ <strong>响应速度快</strong>，适合即时查词场景</li>
+      </ul>
+    </section>
+
+    <section class="settings-section">
+      <h2>步骤 1：注册 DeepSeek 账号</h2>
+      <div class="step">
+        <ol>
+          <li>打开 <a href="https://platform.deepseek.com" target="_blank" rel="noopener">platform.deepseek.com</a></li>
+          <li>点击右上角 <strong>Sign Up</strong> 注册（支持手机号或邮箱）</li>
+          <li>完成注册后登录进入控制台</li>
+        </ol>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <h2>步骤 2：获取 API Key</h2>
+      <div class="step">
+        <ol>
+          <li>登录后在左侧菜单点击 <strong>API Keys</strong></li>
+          <li>点击 <strong>Create API Key</strong> 按钮</li>
+          <li>输入名称（如 "LECTURA"），点击创建</li>
+          <li>⚠️ <strong>立即复制保存 API Key</strong>（只显示一次！）</li>
+        </ol>
+        <div class="highlight-box warn">
+          <strong>API Key 格式：</strong><code>sk-xxxxxxxxxxxxxxxxxxxxxxxx</code><br>
+          请妥善保管，不要分享给他人。
+        </div>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <h2>步骤 3：配置 LECTURA</h2>
+      <div class="step">
+        <ol>
+          <li>打开 LECTURA <strong>设置页面</strong></li>
+          <li>展开 <strong>🤖 LLM API 设置</strong></li>
+          <li>LLM 提供商选择 <strong>DeepSeek</strong>（会自动填入端点和模型）</li>
+          <li>粘贴刚才复制的 API Key 到 <strong>API Key</strong> 输入框</li>
+          <li>保持默认模型 <code>deepseek-v4-flash</code>（速度快、成本低）</li>
+          <li>确保 <strong>自动使用 LLM</strong> 已勾选</li>
+        </ol>
+
+      <div class="highlight-box">
+        <strong>推荐配置：</strong><br>
+        提供商：<code>DeepSeek</code><br>
+        端点：<code>https://api.deepseek.com</code>（自动）<br>
+        模型：<code>deepseek-v4-flash</code><br>
+        <br>
+        📌 选 <code>deepseek-v4-flash</code> 即可，速度快且免费额度充足。
+      </div>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <h2>步骤 4：测试</h2>
+      <div class="step">
+        <p>配置完成后，在任意网页中选一个不常见的英文单词（如 <em>serendipity</em>），如果离线词典未收录，LECTURA 会自动调用 DeepSeek 生成释义。</p>
+        <p>查词结果会标注 <span style="background:rgba(99,102,241,0.1);color:#6366f1;padding:1px 6px;border-radius:8px;font-size:10px;">🤖 LLM</span> 标记。</p>
+      </div>
+    </section>
+
+    <section class="settings-section">
+      <h2>其他 LLM 提供商</h2>
+      <table style="width:100%;border-collapse:collapse;font-size:13px;">
+        <thead><tr style="border-bottom:1px solid #e0e0e0;"><th style="text-align:left;padding:8px;">提供商</th><th style="text-align:left;padding:8px;">国内可用</th><th style="text-align:left;padding:8px;">免费额度</th></tr></thead>
+        <tbody>
+          <tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px;">DeepSeek</td><td style="padding:8px;color:#22c55e;">✅ 是</td><td style="padding:8px;">✅ 注册赠送</td></tr>
+          <tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px;">OpenAI</td><td style="padding:8px;color:#ef4444;">❌ 需代理</td><td style="padding:8px;">新用户 $5</td></tr>
+          <tr style="border-bottom:1px solid #f0f0f0;"><td style="padding:8px;">Anthropic Claude</td><td style="padding:8px;color:#ef4444;">❌ 需代理</td><td style="padding:8px;">有限免费</td></tr>
+          <tr><td style="padding:8px;">自定义端点</td><td style="padding:8px;">视情况</td><td style="padding:8px;">视情况</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <section class="settings-section">
+      <h2>常见问题</h2>
+      <div class="step">
+        <h3>Q: API 调用会花多少钱？</h3>
+        <p>DeepSeek flash 模型价格极低，单次查词约 0.001 元。注册赠送的额度足够数月日常使用。</p>
+
+        <h3>Q: 查词速度怎么样？</h3>
+        <p>DeepSeek flash 模型通常在 1-2 秒内返回结果。如果觉得慢，可以关闭自动 LLM 查询，改为手动触发。</p>
+
+        <h3>Q: 为什么建议 deepseek-v4-flash？</h3>
+        <p>flash 版本专为速度和成本优化，查词、翻译这类简单任务完全够用，不需要更贵的 chat 版本。</p>
+
+        <h3>Q: Prompt 可以自定义吗？</h3>
+        <p>可以！展开设置页面的 📝 Prompt 设置，你可以完全自定义查词和翻译的提示词格式。</p>
+      </div>
+    </section>
+
+  </div>
+</body>
+</html>

@@ -1,0 +1,57 @@
+/**
+ * LECTURA Extension — Content Script Styles
+ *
+ * Minimal styles for injected highlight elements.
+ * Popup styles are in Shadow DOM (popup-ui.js).
+ */
+
+/* ── Highlight Spans ─────────────────────────────────────── */
+
+.lectura-hl {
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 1px 0;
+  transition: background-color 0.2s ease, filter 0.15s ease;
+  position: relative;
+}
+
+.lectura-hl:hover {
+  filter: brightness(0.88);
+}
+
+.lectura-hl:active {
+  filter: brightness(0.78);
+}
+
+/* ── Mastered Highlight (subtle) ──────────────────────────── */
+
+.lectura-mastered {
+  cursor: pointer;
+  border-radius: 2px;
+  padding: 1px 0;
+  transition: background-color 0.2s ease, filter 0.15s ease;
+  position: relative;
+}
+
+.lectura-mastered:hover {
+  filter: brightness(0.9);
+}
+
+/* Toggle: hide all highlight styling while keeping text visible */
+.lectura-hidden {
+  background-color: transparent !important;
+  text-decoration: none !important;
+  text-decoration-color: transparent !important;
+}
+
+/* ── Popup Host (outside Shadow DOM, just positioning) ───── */
+
+#lectura-popup-root {
+  position: fixed;
+  z-index: 2147483647;
+  /* Positioning is set inline by JS */
+}
+
+/* ── Minimize visual impact on page ──────────────────────── */
+
+/* No other page-level styles needed — popup is Shadow DOM isolated */

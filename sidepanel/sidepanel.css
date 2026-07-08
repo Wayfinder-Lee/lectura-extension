@@ -1,0 +1,791 @@
+/**
+ * LECTURA Extension — Side Panel Styles
+ *
+ * Clean, minimal card-based layout with toolbar.
+ */
+
+/* ── CSS Custom Properties ───────────────────────────────── */
+
+:root {
+  --font-size: 14px;
+  --card-width: 100%;
+  --color-bg: #f8f9fa;
+  --color-surface: #ffffff;
+  --color-text: #1a1a2e;
+  --color-text-secondary: #666;
+  --color-border: #e8e8ed;
+  --color-primary: #6366f1;
+  --color-danger: #ef4444;
+  --color-success: #22c55e;
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-card-hover: 0 4px 12px rgba(0,0,0,0.08);
+  --transition: 0.2s ease;
+}
+
+/* Size variants */
+[data-font="small"] { --font-size: 12px; }
+[data-font="large"] { --font-size: 16px; }
+
+/* ── Base ────────────────────────────────────────────────── */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: var(--font-size);
+  color: var(--color-text);
+  background: var(--color-bg);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  user-select: none;
+}
+
+/* ── Toolbar ─────────────────────────────────────────────── */
+
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.toolbar-left {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.toolbar-count {
+  font-size: 12px;
+  color: var(--color-text-secondary);
+}
+
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.toolbar-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  background: transparent;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  font-size: 14px;
+  color: var(--color-text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all var(--transition);
+}
+
+.toolbar-btn svg {
+  width: 16px;
+  height: 16px;
+  flex-shrink: 0;
+}
+
+.toolbar-btn.active {
+  color: var(--color-primary);
+  background: rgba(99, 102, 241, 0.08);
+}
+
+.toolbar-btn:hover {
+  background: rgba(0,0,0,0.06);
+  color: var(--color-text);
+}
+
+.toolbar-divider {
+  width: 1px;
+  height: 16px;
+  background: var(--color-border);
+  margin: 0 4px;
+}
+
+/* ── Filter Bar ──────────────────────────────────────────── */
+
+.filter-bar {
+  display: none; /* hidden by default, toggle with funnel button */
+  padding: 6px 16px 8px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+}
+
+.filter-bar.visible {
+  display: block;
+}
+
+.filter-row {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-row + .filter-row {
+  margin-top: 6px;
+  padding-top: 6px;
+  border-top: 1px solid rgba(0,0,0,0.04);
+}
+
+/* Mastery filter chips */
+.filter-chip {
+  padding: 4px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 14px;
+  background: var(--color-surface);
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.filter-chip:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.filter-chip.active {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+/* Color dots */
+.rainbow-all {
+  width: auto !important;
+  border-radius: 12px !important;
+  padding: 0 10px !important;
+  background: conic-gradient(
+    #FFB3BA, #FFDFBA, #FFFFBA, #BAFFC9, #BAE1FF, #E8BAFF, #FFB3BA
+  ) !important;
+  font-size: 11px;
+  line-height: 22px;
+  color: #555;
+  border: 2px solid #ddd;
+  text-shadow: 0 0 2px white;
+}
+
+.rainbow-all.active {
+  border-color: #333 !important;
+  box-shadow: 0 0 0 2px white, 0 0 0 4px #333 !important;
+}
+
+.filter-dot {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+  flex-shrink: 0;
+}
+
+.filter-dot:hover {
+  transform: scale(1.15);
+}
+
+.filter-dot.active {
+  border-color: #333;
+  box-shadow: 0 0 0 2px white, 0 0 0 4px #333;
+}
+
+/* ── Add Card Button ────────────────────────────────────── */
+
+.add-card-bar {
+  padding: 4px 12px 0;
+}
+
+.add-card-btn {
+  width: 28px;
+  height: 28px;
+  border: 1px dashed #ccc;
+  border-radius: 8px;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #bbb;
+  transition: all 0.15s;
+}
+
+.add-card-btn:hover {
+  border-color: var(--color-primary);
+  color: var(--color-primary);
+  background: rgba(99, 102, 241, 0.04);
+}
+
+/* ── Card List ───────────────────────────────────────────── */
+
+.card-list {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-list.drag-over {
+  background: rgba(99, 102, 241, 0.04);
+}
+
+/* ── Empty State ─────────────────────────────────────────── */
+
+.empty-state {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  color: var(--color-text-secondary);
+}
+
+.empty-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  opacity: 0.6;
+}
+
+.empty-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 8px;
+}
+
+.empty-hint {
+  font-size: 13px;
+  line-height: 1.5;
+  max-width: 260px;
+}
+
+/* ── Card ────────────────────────────────────────────────── */
+
+.card {
+  display: flex;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  transition: all var(--transition);
+  position: relative;
+  cursor: default;
+}
+
+.card-trash-btn {
+  position: absolute;
+  top: 6px;
+  right: 50px;
+  width: 26px;
+  height: 26px;
+  border: none;
+  background: transparent;
+  border-radius: 6px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ccc;
+  z-index: 2;
+  transition: all 0.15s;
+  opacity: 0;
+}
+
+.card:hover .card-trash-btn {
+  opacity: 1;
+}
+
+.card-trash-btn:hover {
+  background: #fef2f2;
+  color: #ef4444;
+}
+
+.card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.card.dragging {
+  opacity: 0.4;
+  transform: scale(0.96);
+}
+
+/* Drag insertion indicators */
+.card.drag-before::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: 12px;
+  right: 12px;
+  height: 3px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.card.drag-after::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 12px;
+  right: 12px;
+  height: 3px;
+  background: var(--color-primary);
+  border-radius: 2px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+/* Left color indicator bar */
+.card-color-bar {
+  width: 4px;
+  flex-shrink: 0;
+  background: var(--card-color, #e0e0e0);
+  transition: background var(--transition);
+}
+
+/* Drag handle */
+.card-drag-handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  flex-shrink: 0;
+  cursor: grab;
+  color: #ccc;
+  font-size: 12px;
+  transition: color var(--transition);
+  user-select: none;
+}
+
+.card-drag-handle:hover {
+  color: #888;
+}
+
+.card-drag-handle:active {
+  cursor: grabbing;
+}
+
+/* Card main content */
+.card-content {
+  flex: 1;
+  padding: 12px 14px;
+  min-width: 0;
+  cursor: pointer;
+}
+
+.card-word {
+  font-size: 1.1em;
+  font-weight: 700;
+  color: var(--color-text);
+  margin-bottom: 4px;
+  word-break: break-word;
+}
+
+.card-meta {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 0.85em;
+  margin-bottom: 6px;
+}
+
+.card-pos {
+  color: var(--color-primary);
+  font-weight: 600;
+}
+
+.card-phonetic {
+  color: var(--color-text-secondary);
+  font-family: "Lucida Sans Unicode", sans-serif;
+}
+
+.card-definitions {
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  transition: all 0.3s ease;
+  overflow: hidden;
+}
+
+.card-def-line {
+  padding: 3px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.04);
+}
+
+.card-def-line:last-child {
+  border-bottom: none;
+}
+
+/* Selected card (batch mode) */
+.card.is-selected {
+  box-shadow: 0 0 0 2px var(--color-primary);
+  background: rgba(99, 102, 241, 0.04);
+}
+
+/* Hidden definitions (toggle) */
+.card-definitions.hidden {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+}
+
+/* Source sentence */
+.card-source {
+  margin-top: 8px;
+  padding: 8px 10px;
+  background: rgba(0,0,0,0.02);
+  border-radius: var(--radius-sm);
+  font-size: 0.85em;
+  color: var(--color-text-secondary);
+  line-height: 1.5;
+  transition: all 0.3s ease;
+}
+
+.card-source.hidden {
+  max-height: 0;
+  opacity: 0;
+  padding: 0 10px;
+  margin: 0;
+  overflow: hidden;
+}
+
+.card-source .source-highlight {
+  font-weight: 700;
+  color: var(--color-text);
+  background: rgba(99, 102, 241, 0.12);
+  padding: 1px 3px;
+  border-radius: 3px;
+}
+
+.card-source-line {
+  margin-bottom: 4px;
+  line-height: 1.5;
+}
+
+.card-source-line:last-child {
+  margin-bottom: 0;
+}
+
+.card-source-num {
+  color: #aaa;
+  font-size: 0.85em;
+}
+
+.card-source-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 0.8em;
+  color: var(--color-primary);
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.card-source-link:hover {
+  text-decoration: underline;
+}
+
+/* Card right side — mastered ribbon */
+.card {
+  overflow: hidden;
+}
+
+.card-ribbon {
+  width: 44px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  background: var(--color-surface);
+  border-left: 1px solid #e0e0e0;
+  color: #bbb;
+  transition: background 0.3s ease, color 0.3s ease;
+  user-select: none;
+}
+
+.card-ribbon:hover {
+  background: #f5f5f5;
+  color: #999;
+}
+
+.card-ribbon.is-mastered {
+  background: #22c55e;
+  border-left-color: #16a34a;
+  color: white;
+}
+
+.card-ribbon.is-mastered:hover {
+  background: #16a34a;
+}
+
+/* Ripple animation */
+.ribbon-ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  width: 10px;
+  height: 10px;
+  transform: translate(-50%, -50%) scale(0);
+  pointer-events: none;
+}
+
+.ribbon-ripple.spread {
+  animation: ribbon-spread 0.3s ease-out forwards;
+}
+
+@keyframes ribbon-spread {
+  to {
+    transform: translate(-50%, -50%) scale(30);
+    opacity: 0;
+  }
+}
+
+/* Sentence card — hover to expand */
+.card-sentence-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.card:hover .card-sentence-text {
+  -webkit-line-clamp: unset;
+  display: block;
+}
+
+/* Card mastered state */
+.card.is-mastered .card-word {
+  color: var(--color-text-secondary);
+}
+
+/* ── Context Menu ────────────────────────────────────────── */
+
+.context-menu {
+  position: fixed;
+  z-index: 10000;
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15);
+  padding: 6px;
+  min-width: 180px;
+  animation: context-in 0.1s ease-out;
+}
+
+@keyframes context-in {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.context-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  font-size: 13px;
+  color: var(--color-text);
+  cursor: pointer;
+  border-radius: 6px;
+  text-align: left;
+  transition: background var(--transition);
+}
+
+.context-item:hover {
+  background: rgba(0,0,0,0.05);
+}
+
+.context-item.danger {
+  color: var(--color-danger);
+}
+
+.context-item.danger:hover {
+  background: #fef2f2;
+}
+
+.context-divider {
+  height: 1px;
+  background: var(--color-border);
+  margin: 4px 8px;
+}
+
+.context-colors {
+  display: flex;
+  gap: 6px;
+  padding: 6px 10px;
+}
+
+.context-colors .color-dot {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+  box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+.context-colors .color-dot:hover {
+  transform: scale(1.2);
+  border-color: #333;
+}
+
+/* ── Batch Bar ──────────────────────────────────────────── */
+
+.batch-bar {
+  display: flex;
+  gap: 8px;
+  padding: 8px 16px;
+  background: var(--color-surface);
+  border-bottom: 1px solid var(--color-border);
+  flex-wrap: wrap;
+}
+
+.batch-btn {
+  padding: 6px 14px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  font-size: 13px;
+  cursor: pointer;
+  transition: all var(--transition);
+}
+
+.batch-btn:hover {
+  background: rgba(0,0,0,0.04);
+}
+
+.batch-btn.danger {
+  color: var(--color-danger);
+  border-color: var(--color-danger);
+}
+
+.batch-btn.danger:hover {
+  background: #fef2f2;
+}
+
+/* ── Edit Modal ──────────────────────────────────────────── */
+
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 20000;
+  background: rgba(0,0,0,0.3);
+  backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  animation: modal-in 0.15s ease-out;
+}
+
+@keyframes modal-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.modal-content {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: 0 12px 48px rgba(0,0,0,0.2);
+  padding: 20px;
+  width: calc(100% - 32px);
+  max-width: 400px;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.modal-content h3 {
+  font-size: 16px;
+  margin-bottom: 16px;
+  color: var(--color-text);
+}
+
+.modal-content label {
+  display: block;
+  font-size: 12px;
+  color: var(--color-text-secondary);
+  margin-bottom: 4px;
+  margin-top: 12px;
+}
+
+.modal-input, .modal-textarea {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+  font-family: inherit;
+  color: var(--color-text);
+  resize: vertical;
+}
+
+.modal-input:focus, .modal-textarea:focus {
+  outline: none;
+  border-color: var(--color-primary);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.modal-btn {
+  padding: 8px 20px;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  background: var(--color-surface);
+  cursor: pointer;
+  font-size: 14px;
+  transition: all var(--transition);
+}
+
+.modal-btn.primary {
+  background: var(--color-primary);
+  color: white;
+  border-color: var(--color-primary);
+}
+
+.modal-btn.primary:hover {
+  opacity: 0.9;
+}
+
+/* ── Scrollbar ───────────────────────────────────────────── */
+
+.card-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.card-list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.card-list::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.15);
+  border-radius: 3px;
+}

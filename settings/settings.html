@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LECTURA 设置</title>
+  <link rel="stylesheet" href="settings.css">
+</head>
+<body>
+  <div class="settings-container">
+    <header class="settings-header">
+      <h1>⚙ LECTURA 设置</h1>
+      <p class="subtitle">本地词典 · 离线可用 · LLM 增强</p>
+    </header>
+
+    <!-- Dictionary Info -->
+    <section class="settings-section">
+      <h2>📚 本地词典 (ECDICT)</h2>
+      <p class="section-desc">
+        基于 <a href="https://github.com/skywind3000/ECDICT" target="_blank" rel="noopener">skywind3000/ECDICT</a>
+        开源英汉词典，精选 5 万+ 常用及考试词汇，完全离线查询。
+      </p>
+      <div class="dict-info" id="dictInfo">
+        <div class="dict-stat">
+          <span class="dict-stat-label">词典状态</span>
+          <span class="dict-stat-value" id="dictStatus">查询中...</span>
+        </div>
+        <div class="dict-stat">
+          <span class="dict-stat-label">收录词汇</span>
+          <span class="dict-stat-value" id="dictWordCount">—</span>
+        </div>
+      </div>
+      <div class="form-actions" style="margin-top:12px;">
+        <button type="button" class="btn" id="btnReloadDict">重新加载词典</button>
+        <span class="test-result" id="reloadResult"></span>
+      </div>
+    </section>
+
+    <!-- Display Preferences -->
+    <section class="settings-section">
+      <h2>显示偏好</h2>
+      <div class="form-group">
+        <label>默认音标</label>
+        <div class="radio-group">
+          <label class="radio-label">
+            <input type="radio" name="phoneticType" value="uk">
+            <span>英式 (UK)</span>
+          </label>
+          <label class="radio-label">
+            <input type="radio" name="phoneticType" value="us">
+            <span>美式 (US)</span>
+          </label>
+        </div>
+      </div>
+      <div class="form-group">
+        <label>侧边栏字体大小</label>
+        <select id="fontSize" class="form-select">
+          <option value="small">小</option>
+          <option value="medium" selected>中</option>
+          <option value="large">大</option>
+        </select>
+      </div>
+    </section>
+
+    <!-- LLM API (collapsed by default) -->
+    <details class="settings-section settings-collapse">
+      <summary><h2>🤖 LLM API 设置</h2></summary>
+      <p class="section-desc">
+        当离线词典未收录某词汇时，自动调用 LLM 生成释义。
+        支持 OpenAI 及兼容接口。
+      </p>
+      <div class="form-group">
+        <label><input type="checkbox" id="autoLLM" checked style="margin-right:6px;"> 自动使用 LLM 查询离线词典未收录的词汇</label>
+      </div>
+      <div class="form-group">
+        <label for="llmProvider">LLM 提供商</label>
+        <select id="llmProvider" class="form-select">
+          <option value="deepseek">DeepSeek（推荐，国内可用）</option>
+          <option value="openai">OpenAI</option>
+          <option value="anthropic">Anthropic Claude</option>
+          <option value="custom">自定义 (OpenAI 兼容)</option>
+        </select>
+        <a href="settings-tutorial.html" target="_blank" class="tutorial-link">设置教程 →</a>
+      </div>
+      <div class="form-group">
+        <label for="llmApiKey">API Key</label>
+        <input type="password" id="llmApiKey" class="form-input" placeholder="sk-..." autocomplete="off">
+      </div>
+      <div class="form-group" id="customEndpointGroup" style="display:none;">
+        <label for="llmEndpoint">API 端点</label>
+        <input type="text" id="llmEndpoint" class="form-input" placeholder="https://api.openai.com/v1">
+      </div>
+      <div class="form-group">
+        <label for="llmModel">模型</label>
+        <input type="text" id="llmModel" class="form-input" placeholder="gpt-4o-mini">
+      </div>
+    </details>
+
+    <!-- Prompt Editing (collapsed by default) -->
+    <details class="settings-section settings-collapse">
+      <summary><h2>📝 Prompt 设置</h2></summary>
+      <p class="section-desc">
+        使用 <code>{{word}}</code> <code>{{definitions}}</code> <code>{{text}}</code> <code>{{UKUS}}</code> 作为占位符。
+        <code>{{UKUS}}</code> 会根据音标偏好自动替换为"英式"或"美式"。
+      </p>
+      <div class="form-group">
+        <label for="promptWordLookup">单词查询 Prompt</label>
+        <textarea id="promptWordLookup" class="modal-textarea" rows="6" style="font-family:monospace;font-size:12px;"></textarea>
+        <button type="button" class="btn btn-sm" id="btnResetWordPrompt">重置</button>
+      </div>
+      <div class="form-group">
+        <label for="promptMoreExamples">更多例句 Prompt</label>
+        <textarea id="promptMoreExamples" class="modal-textarea" rows="4" style="font-family:monospace;font-size:12px;"></textarea>
+        <button type="button" class="btn btn-sm" id="btnResetExamplesPrompt">重置</button>
+      </div>
+      <div class="form-group">
+        <label for="promptSentence">句子翻译 Prompt</label>
+        <textarea id="promptSentence" class="modal-textarea" rows="3" style="font-family:monospace;font-size:12px;"></textarea>
+        <button type="button" class="btn btn-sm" id="btnResetSentencePrompt">重置</button>
+      </div>
+    </details>
+
+    <!-- Reading Recommendations -->
+    <section class="settings-section">
+      <h2>📖 阅读推荐</h2>
+      <p class="section-desc">
+        以下全部为免费、无付费墙的英文阅读网站，适合外文阅读练习。
+      </p>
+      <div class="reading-grid" id="readingList"></div>
+    </section>
+
+    <!-- Data Management -->
+    <section class="settings-section">
+      <h2>数据管理</h2>
+      <div class="form-actions">
+        <button type="button" class="btn" id="btnExportData">导出所有数据 (JSON)</button>
+        <button type="button" class="btn" id="btnImportData">导入数据</button>
+        <input type="file" id="importFile" accept=".json" style="display:none;">
+      </div>
+      <div class="form-actions" style="margin-top:12px;">
+        <button type="button" class="btn danger" id="btnClearData">清除所有数据</button>
+      </div>
+    </section>
+
+    <!-- About -->
+    <section class="settings-section">
+      <h2>关于</h2>
+      <p class="about-text">
+        LECTURA Vocabulary Builder v0.2.0<br>
+        基于 ECDICT 开源词典 + LLM 增强的离线语言学习扩展。
+      </p>
+    </section>
+  </div>
+  <script src="settings.js" type="module"></script>
+</body>
+</html>
