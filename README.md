@@ -1,128 +1,76 @@
-# LECTURA Extension
+# LECTURA Vocabulary Builder
 
-A Chrome/Edge browser extension for language learners. Select, save, and review vocabulary words and sentences from any webpage — **fully offline, no API keys needed**.
+一款浏览器词汇学习扩展。在网页上选中单词 → 即刻查词 → 自动高亮 → 侧边栏闪卡复习。**完全离线优先，可选 LLM 增强。**
 
-## Features
+[![Version](https://img.shields.io/badge/version-1.1.0-blue)](https://github.com/Wayfinder-Lee/lectura-extension)
+[![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 
-- **Instant Local Dictionary**: ~50,000 words from [ECDICT](https://github.com/skywind3000/ECDICT) (MIT License), covering CET-4/6, TOEFL, IELTS, GRE, and more
-- **Smart Selection**: Select any text — words (≤6 words) get dictionary lookup, sentences (≥7 words) saved as-is
-- **Inflection Handling**: Automatically resolves past tense, plural, and other word forms to their base form
-- **Frosted Glass Popup**: Beautiful semi-transparent popup with dictionary results
-- **Persistent Highlighting**: All saved words are highlighted across all webpages you visit
-- **Macaron Color Coding**: Assign one of 6 macaron colors to categorize your vocabulary
-- **Mastered Tracking**: Mark words as mastered — their highlight style changes to a subtle underline
-- **Side Panel**: Browse, edit, reorder, and export your collection in a clean card-based interface
-- **Export**: Export as JSON, CSV, or Anki-compatible CSV
-- **100% Local**: All data stays on your computer. Works completely offline.
+---
 
-## Setup
+## ✨ 功能
 
-### 1. Build the Dictionary
+- **📖 即选即查**：选中任意网页上的英文单词，毛玻璃弹窗即刻显示音标、词性、释义、考试等级（四六级/托福/雅思/GRE/中考/高考）
+- **🤖 LLM 增强**（可选）：离线词典未收录的词，自动调用 LLM（DeepSeek / OpenAI / Anthropic）生成完整释义。DeepSeek 国内直接可用，注册送免费额度
+- **🎨 网页高亮标注**：收藏的单词在你访问的**所有网页**上自动高亮。6 种马卡龙配色，已掌握的单词变为虚线下划线
+- **📋 闪卡管理**：侧边栏卡片列表，支持拖拽排序、右键编辑、颜色筛选、批量操作
+- **🔄 变形识别**：选中 `assigned` → 查到 `assign`，选中 `children` → 查到 `child`
+- **📖 沉浸式阅读模式**：内置阅读器，字号/行高/段距/字体/纸色可调，caption 和小标题自动识别
+- **🔗 链接屏蔽**：按住 `Alt` 键可在链接上选词，松开恢复
+- **💬 取词气泡**：极简圆形"学习"浮动按钮模式，适合精读
+- **⌨ 快捷键**：`Ctrl+Shift+L` 呼出侧边栏（可在 Chrome 快捷键设置中自定义）
+- **🌐 完全离线**：ECDICT 词典内置 5 万+ 词汇，储存在浏览器 IndexedDB 中，无网络延迟
+- **📤 多格式导出**：JSON / CSV / Anki 兼容格式
 
-First, generate the local dictionary file:
+## 📦 安装
 
-```bash
-cd LECTURA-extension
-node scripts/build-dict.js
-```
+### Chrome / Edge
 
-This downloads the ECDICT CSV (~80MB), filters to ~50,000 commonly-used and exam-relevant words, and outputs a compact JSON file (~2-3MB) to `shared/ecdict-filtered.json`.
+1. 下载 [最新 Release](https://github.com/Wayfinder-Lee/lectura-extension/releases) 或克隆仓库
+2. 打开 `chrome://extensions/`（Edge 是 `edge://extensions/`）
+3. 开启右上角 **开发者模式**
+4. 点击 **加载已解压的扩展程序** → 选择项目文件夹
+5. （可选）生成词典数据：`node scripts/build-dict.js`
 
-### 2. Load the Extension
+### 配置 LLM（可选）
 
-#### Chrome
-1. Open `chrome://extensions/`
-2. Enable "Developer mode" (top right)
-3. Click "Load unpacked"
-4. Select the `LECTURA-extension` folder
+1. 右键扩展图标 → **选项** 或侧边栏齿轮图标 → 打开设置页面
+2. 展开 "LLM API 设置"
+3. 推荐选择 **DeepSeek**（国内直连，注册即送免费额度）
+4. 填入 API Key
+5. 查词失败时自动调用 LLM 生成完整释义
 
-#### Edge
-1. Open `edge://extensions/`
-2. Enable "Developer mode" (bottom left)
-3. Click "Load unpacked"
-4. Select the `LECTURA-extension` folder
+## 🎯 使用场景
 
-### 3. Start Learning
+- 📰 阅读 BBC / Reuters / The Guardian 等英文新闻
+- 📚 浏览英文文献/论文时快速查词
+- 🎓 备考四六级 / 托福 / 雅思 / GRE，在真实语境中记忆单词
+- 📖 使用内置阅读模式沉浸式阅读英文文章
 
-1. Browse the web as normal
-2. **Select** a word you want to learn
-3. A frosted glass popup appears with instant dictionary results
-4. Click **☆** to save, optionally pick a macaron color
-5. Click the extension icon to open the **Side Panel** and review your collection
+## ⌨ 快捷键
 
-## Dictionary Data
+| 快捷键 | 功能 |
+|--------|------|
+| `Ctrl+Shift+L` | 呼出/切换侧边栏 |
+| 按住 `Alt` | 临时屏蔽链接（在链接上选词） |
+| `Esc` | 关闭弹窗 |
 
-LECTURA uses the [ECDICT](https://github.com/skywind3000/ECDICT) open-source English-Chinese dictionary:
+## 🔒 隐私
 
-| Field | Description |
-|-------|-------------|
-| Word + Phonetic | UK IPA notation |
-| Part of Speech | `n.`, `v.`, `adj.`, `adv.`, etc. |
-| Chinese Definitions | One per line |
-| Exam Tags | `CET-4`, `CET-6`, `TOEFL`, `IELTS`, `GRE`, `中考`, `高考` |
-| Collins Stars | 1-5 star word frequency rating |
-| Oxford 3000 | Core English vocabulary indicator |
-| Word Forms | Past tense, plural, comparative, etc. |
+- **不收集、不存储、不传输**任何个人数据
+- 所有词汇数据保存在浏览器本地
+- LLM API Key 仅存储在本地，直连 LLM 提供商
+- 无任何遥测、无第三方追踪
 
-## Usage Tips
+## 🛠 技术栈
 
-| Action | How |
-|--------|-----|
-| Select text | Mouse drag or double-click any word on a webpage |
-| Save | Click ☆ in the popup (pick a color first if desired) |
-| Mark mastered | Click ✅ in the popup or ○ in the side panel card |
-| View collection | Click the LECTURA icon in the toolbar |
-| Edit a card | Right-click a card → Edit |
-| Change card color | Right-click a card → pick a color |
-| Delete a card | Right-click a card → Delete |
-| Reorder cards | Drag the ⋮⋮ handle on the left of each card |
-| Batch operations | Click ☑ in the toolbar, select cards, use batch bar |
-| Export data | Click 📤 in the toolbar, choose format |
-| Toggle definitions | Click 👁 in the toolbar to hide/show definitions |
-| Font size | Use A- / A+ buttons in the toolbar |
+- **词典**：ECDICT（5 万+ 词汇，MIT 开源）
+- **LLM**：OpenAI 兼容接口（DeepSeek / OpenAI / Anthropic）
+- **存储**：chrome.storage.local + IndexedDB
+- **高亮**：Trie 树 O(n) 文本匹配 + MutationObserver 动态监听
+- **阅读器**：字号扫描自动识别正文/标题/caption
 
-## Permissions
+## 📄 许可
 
-| Permission | Why |
-|------------|-----|
-| `storage` | Save your word collection locally |
-| `unlimitedStorage` | Room for the dictionary database and your vocabulary |
-| `activeTab` | Detect text selection on the current tab |
-| `sidePanel` | Show the card collection in the browser sidebar |
-| `<all_urls>` | Highlight saved words on all webpages |
+MIT License
 
-## Privacy
-
-- **No network requests** — all dictionary lookups are local (IndexedDB)
-- **No accounts**, no analytics, no tracking
-- All data stored in your browser using `chrome.storage.local` and IndexedDB
-- No external servers involved at all
-
-## Project Structure
-
-```
-LECTURA-extension/
-├── manifest.json
-├── scripts/
-│   └── build-dict.js         # Build script: CSV → filtered JSON
-├── background/
-│   ├── service-worker.js     # Message router + dictionary init
-│   ├── dictionary.js         # IndexedDB dictionary engine
-│   └── storage.js            # chrome.storage.local CRUD
-├── content/
-│   ├── content.js            # Main content script entry
-│   ├── content.css
-│   ├── popup/                # Frosted glass popup (Shadow DOM)
-│   ├── highlight/            # Trie-based text highlighting
-│   └── selection/            # Text selection + XPath anchoring
-├── sidepanel/                # Side panel (cards, toolbar, export)
-├── settings/                 # Options page (preferences, data mgmt)
-├── shared/                   # Utilities (Trie, colors, constants)
-│   ├── ecdict-filtered.json  # Generated dictionary data
-│   └── ecdict-inflections.json
-└── icons/
-```
-
-## License
-
-MIT
+词典数据来自 [skywind3000/ECDICT](https://github.com/skywind3000/ECDICT)（MIT License）。
