@@ -40,8 +40,6 @@ export function createSelectionDetector(onSelect, onDeselect) {
   }
 
   // On selectionchange: only detect deselection (clearing text).
-  // We do NOT trigger the popup here — that's mouseup's job.
-  // But we also handle keyboard-only selection (Shift+Arrow) via debounce.
   function handleSelectionChange() {
     const selection = window.getSelection();
     if (!selection || selection.isCollapsed || selection.rangeCount === 0) {
@@ -52,15 +50,17 @@ export function createSelectionDetector(onSelect, onDeselect) {
           lastSelectionText = '';
           onDeselect();
         }
-      }, 300);
+      }, 500); // longer debounce for double-click tolerance
       return;
     }
 
     // If mouse is still down, user is still selecting — don't process yet
     if (isMouseDown) return;
 
-    // Keyboard selection (no mousedown/mouseup) — use debounce
+    // Selection was restored after a brief collapse (e.g. double-click flicker)
     clearTimeout(deselectionTimer);
+
+    // Keyboard selection (no mousedown/mouseup) — use debounce
     deselectionTimer = setTimeout(() => {
       processSelection();
     }, 400);

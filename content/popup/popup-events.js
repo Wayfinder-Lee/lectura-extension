@@ -141,8 +141,10 @@ export function createOutsideClickListener(onClose) {
     const host = document.getElementById('lectura-popup-root');
     if (!host || host.style.display === 'none') return;
 
-    // If click is inside the host (shadow DOM), don't close
+    // Don't close if click is inside the popup, the bubble, or a highlight
     if (host.contains(e.target) || host === e.target) return;
+    if (e.target.closest('#lectura-bubble')) return;
+    if (e.target.closest('.lectura-hl, .lectura-mastered')) return;
 
     if (onClose) onClose();
   }

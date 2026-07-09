@@ -13,17 +13,20 @@ import { showNewWordPopup, showSavedWordPopup, showSentencePopup, showLoading, s
 import { createOutsideClickListener, createKeyboardHandler } from './popup/popup-events.js';
 import { highlightAll, clearAllHighlights, rehighlight, updateHighlightStyle, getHighlightData } from './highlight/highlighter.js';
 import { startObserver, updateWords, stopObserver, detectSpaNavigation } from './highlight/observer.js';
+import { initBubble, showBubble, hideBubble, destroyBubble } from './bubble.js';
 
 // ─── State ──────────────────────────────────────────────────
 
 let savedWords = [];
 let savedWordMap = new Map();
 let phoneticType = 'us';
+let selectionMode = 'direct'; // 'direct' | 'bubble' | 'off'
 let selectionDetector = null;
 let outsideClickListener = null;
 let keyboardHandler = null;
 let spaDetector = null;
 let isQuerying = false;
+let pendingWordData = null; // stored for bubble mode
 
 // ─── Initialization ─────────────────────────────────────────
 
@@ -33,6 +36,23 @@ async function init() {
     const settingsRes = await chrome.runtime.sendMessage({ type: MSG.GET_SETTINGS });
     if (settingsRes.success) {
       phoneticType = settingsRes.settings.phoneticType || 'us';
+      selectionMode = settingsRes.settings.selectionMode || 'direct';
+    }
+
+    // Init bubble for bubble mode
+    if (selectionMode === 'bubble') {
+      initBubble(onBubbleTriggered);
+      window.addEventListener('scroll', hideBubble, { passive: true, capture: true });
+      // Hide bubble when clicking outside (blank area, etc.)
+      document.addEventListener('click', (e) => {
+        if (!e.target.closest('#lectura-bubble') && !e.target.closest('.lectura-hl, .lectura-mastered')) {
+          const sel = window.getSelection();
+          if (!sel || sel.isCollapsed) {
+            hideBubble();
+            pendingWordData = null;
+          }
+        }
+      }, true);
     }
 
     // Load highlight data for this page
@@ -82,8 +102,8 @@ function buildWordMap() {
 
 function onTextSelected({ text, type, wordCount, rect, range }) {
   if (isQuerying) return;
+  if (selectionMode === 'off') return;
 
-  // Clone range immediately — the live range may become invalid later
   const savedRange = range.cloneRange();
 
   // Check if clicking on an existing highlight
@@ -98,6 +118,14 @@ function onTextSelected({ text, type, wordCount, rect, range }) {
 
   if (text.length < LIMITS.MIN_WORD_LENGTH) return;
 
+  if (selectionMode === 'bubble') {
+    // Bubble mode: show floating bubble, defer popup to click
+    pendingWordData = { text, type, wordCount, rect, range: savedRange };
+    showBubble(rect.left, rect.top, rect.width);
+    return;
+  }
+
+  // Direct mode
   if (type === 'word') {
     handleWordSelection(text, rect, savedRange);
   } else {
@@ -105,8 +133,30 @@ function onTextSelected({ text, type, wordCount, rect, range }) {
   }
 }
 
+function onBubbleTriggered() {
+  if (!pendingWordData) return;
+  const { text, type, rect, range } = pendingWordData;
+  pendingWordData = null;
+  // Delay to let the click event finish — otherwise outside-click handler closes popup immediately
+  setTimeout(() => {
+    if (type === 'word') {
+      handleWordSelection(text, rect, range);
+    } else {
+      handleSentenceSelection(text, rect, range);
+    }
+  }, 100);
+}
+
 function onTextDeselected() {
-  // Popup is closed by outside-click handler, not on deselect
+  // Small delay — might be mid-double-click, selection will restore
+  setTimeout(() => {
+    const sel = window.getSelection();
+    if (sel && !sel.isCollapsed && sel.toString().trim().length >= LIMITS.MIN_WORD_LENGTH) {
+      return; // selection restored, don't hide
+    }
+    hideBubble();
+    pendingWordData = null;
+  }, 150);
 }
 
 // ─── Word Selection ─────────────────────────────────────────
@@ -190,21 +240,38 @@ async function handleWordSelection(word, rect, range) {
 // ─── Sentence Selection ─────────────────────────────────────
 
 async function handleSentenceSelection(text, rect, range) {
-  showLoading({ x: rect.left, y: rect.top, width: rect.width });
-  const result = await chrome.runtime.sendMessage({
-    type: MSG.QUERY_WORD, payload: { text, type: 'sentence' }
-  });
-  if (!isPopupVisible()) return;
-  const translation = result.success ? result.data?.translation : null;
-  showSentencePopup(
-    { x: rect.left, y: rect.top, width: rect.width },
-    text, translation,
-    {
-      onSave: (color) => saveSentenceFromPopup(text, translation, range, color),
-      onColorSelect: () => {},
-      onClose: handlePopupClose
-    }
-  );
+  const wc = countWords(text);
+  // Only translate sentences ≤100 words to avoid token waste
+  if (wc <= 100) {
+    showLoading({ x: rect.left, y: rect.top, width: rect.width },
+      { onSave: (color) => saveSentenceFromPopup(text, null, range, color),
+        onSaveImmediate: (color) => saveSentenceFromPopup(text, null, range, color) });
+    const result = await chrome.runtime.sendMessage({
+      type: MSG.QUERY_WORD, payload: { text, type: 'sentence' }
+    });
+    if (!isPopupVisible()) return;
+    const translation = result.success ? result.data?.translation : null;
+    showSentencePopup(
+      { x: rect.left, y: rect.top, width: rect.width },
+      text, translation,
+      {
+        onSave: (color) => saveSentenceFromPopup(text, translation, range, color),
+        onColorSelect: () => {},
+        onClose: handlePopupClose
+      }
+    );
+  } else {
+    // Long text: skip translation, save directly
+    showSentencePopup(
+      { x: rect.left, y: rect.top, width: rect.width },
+      text, null,
+      {
+        onSave: (color) => saveSentenceFromPopup(text, '', range, color),
+        onColorSelect: () => {},
+        onClose: handlePopupClose
+      }
+    );
+  }
 }
 
 // ─── Save Operations ────────────────────────────────────────
@@ -392,8 +459,32 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
   }
 
+  if (message.type === 'SELECTION_MODE_CHANGED') {
+    selectionMode = message.payload.mode;
+    if (selectionMode === 'bubble') {
+      initBubble(onBubbleTriggered);
+    } else {
+      hideBubble();
+    }
+    console.log('LECTURA: Selection mode →', selectionMode);
+    sendResponse({ success: true });
+    return true;
+  }
+
   if (message.type === 'TOGGLE_HIGHLIGHTS') {
     toggleAllHighlights();
+    sendResponse({ success: true });
+    return true;
+  }
+
+  if (message.type === 'ENTER_READING_MODE') {
+    import('./reading/reader.js').then(m => m.enterReadingMode());
+    sendResponse({ success: true });
+    return true;
+  }
+
+  if (message.type === 'EXIT_READING_MODE') {
+    import('./reading/reader.js').then(m => m.exitReadingMode());
     sendResponse({ success: true });
     return true;
   }
@@ -589,9 +680,11 @@ window.addEventListener('beforeunload', () => {
   if (outsideClickListener) outsideClickListener.destroy();
   if (keyboardHandler) keyboardHandler.destroy();
   if (spaDetector) spaDetector.destroy();
+  destroyBubble();
   stopObserver();
 });
 
 // ─── Start ──────────────────────────────────────────────────
 
 export default init;
+export { init as reinitContentScript };

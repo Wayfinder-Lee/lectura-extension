@@ -21,6 +21,7 @@ function getDefaultSettings() {
     fontSize: 'medium',
     cardSize: 'medium',
     hideDefinitions: false,
+    selectionMode: 'direct',
     autoLLM: true,
     llmProvider: 'deepseek',
     llmApiKey: '',

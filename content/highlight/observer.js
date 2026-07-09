@@ -24,6 +24,8 @@ export function startObserver(words) {
   pendingWords = words;
 
   observer = new MutationObserver((mutations) => {
+    // Skip mutations in reading mode (reader manages its own DOM)
+    if (window.__lecturaReadingMode) return;
     // Collect affected subtrees
     const affectedNodes = new Set();
 

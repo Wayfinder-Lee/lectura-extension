@@ -29,6 +29,52 @@ chrome.runtime.onInstalled.addListener(async () => {
   // Set side panel to open on action click
   chrome.sidePanel.setPanelBehavior({ openPanelOnActionClick: true })
     .catch(err => console.warn('Side panel setup:', err));
+
+  // Set up selection mode context menu (right-click extension icon)
+  setupContextMenu();
+});
+
+function setupContextMenu() {
+  // Remove existing to avoid duplicates on re-install
+  chrome.contextMenus.removeAll(() => {
+    chrome.contextMenus.create({
+      id: 'selection-direct',
+      title: '✅ 开启选择取词',
+      type: 'radio',
+      contexts: ['action'],
+      checked: true
+    });
+    chrome.contextMenus.create({
+      id: 'selection-bubble',
+      title: '💬 开启取词气泡',
+      type: 'radio',
+      contexts: ['action']
+    });
+    chrome.contextMenus.create({
+      id: 'selection-off',
+      title: '⏸ 关闭取词',
+      type: 'radio',
+      contexts: ['action']
+    });
+  });
+}
+
+// Handle context menu clicks → store preference
+chrome.contextMenus.onClicked.addListener(async (info) => {
+  const modeMap = {
+    'selection-direct': 'direct',
+    'selection-bubble': 'bubble',
+    'selection-off': 'off'
+  };
+  const mode = modeMap[info.menuItemId];
+  if (mode) {
+    const settings = await getSettings();
+    settings.selectionMode = mode;
+    await saveSettings(settings);
+
+    // Notify all tabs
+    notifyAllTabs('SELECTION_MODE_CHANGED', { mode });
+  }
 });
 
 // ─── Message Router ─────────────────────────────────────────

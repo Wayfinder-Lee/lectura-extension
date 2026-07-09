@@ -56,9 +56,7 @@ export function render(itemList, displayOptions = {}) {
 
   const countEl = document.getElementById('itemCount');
   if (countEl) {
-    countEl.textContent = colorFilter
-      ? `${filtered.length} / ${items.length} 项`
-      : `${items.length} 项`;
+    countEl.textContent = '';
   }
 
   for (const item of filtered) {

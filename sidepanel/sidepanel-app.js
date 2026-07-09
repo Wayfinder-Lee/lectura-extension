@@ -113,19 +113,7 @@ function renderColorFilter() {
 
 function setupToolbar() {
   const el = (id) => document.getElementById(id);
-  if (!el('btnFontDown')) return console.error('Toolbar elements missing!');
-
-  el('btnFontDown').addEventListener('click', () => {
-    const sizes = ['small', 'medium', 'large'];
-    const idx = sizes.indexOf(settings.fontSize);
-    if (idx > 0) { settings.fontSize = sizes[idx - 1]; applySettings(); saveSettings(); }
-  });
-
-  el('btnFontUp').addEventListener('click', () => {
-    const sizes = ['small', 'medium', 'large'];
-    const idx = sizes.indexOf(settings.fontSize);
-    if (idx < sizes.length - 1) { settings.fontSize = sizes[idx + 1]; applySettings(); saveSettings(); }
-  });
+  if (!el('btnToggleDefs')) return console.error('Toolbar elements missing!');
 
   el('btnToggleDefs').addEventListener('click', () => {
     settings.hideDefinitions = !settings.hideDefinitions;
@@ -157,6 +145,18 @@ function setupToolbar() {
       masteryFilter = chip.dataset.mastery;
       loadItems();
     });
+  });
+
+  // Reading mode (toggle)
+  let isReadingMode = false;
+  el('btnReadingMode').addEventListener('click', async () => {
+    isReadingMode = !isReadingMode;
+    el('btnReadingMode').title = isReadingMode ? '退出阅读模式' : '进入阅读模式';
+    el('btnReadingMode').classList.toggle('active', isReadingMode);
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab?.id) {
+      chrome.tabs.sendMessage(tab.id, { type: isReadingMode ? 'ENTER_READING_MODE' : 'EXIT_READING_MODE' });
+    }
   });
 
   // Highlight toggle — sends to active tab
