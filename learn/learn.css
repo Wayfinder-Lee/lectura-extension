@@ -1,0 +1,237 @@
+/**
+ * LECTURA Learning Page Styles
+ */
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: system-ui, -apple-system, sans-serif;
+  background: #f8f9fa;
+  color: #1a1a2e;
+  min-height: 100vh;
+}
+
+/* ── Top Bar ─────────────────────────────────────────────── */
+
+.topbar {
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px; background: white;
+  border-bottom: 1px solid #e8e8ed;
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-logo { font-size: 18px; font-weight: 700; color: #6366f1; }
+.topbar-tabs { display: flex; gap: 4px; margin-left: 24px; }
+.topbar-tab {
+  padding: 6px 16px; border: none; border-radius: 8px;
+  background: transparent; cursor: pointer; font-size: 14px;
+  color: #666; transition: all 0.15s;
+}
+.topbar-tab:hover { background: rgba(0,0,0,0.04); }
+.topbar-tab.active { background: rgba(99,102,241,0.1); color: #6366f1; font-weight: 600; }
+.topbar-spacer { flex: 1; }
+.topbar-close {
+  width: 32px; height: 32px; border: none; border-radius: 8px;
+  background: transparent; cursor: pointer; color: #888;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px; transition: all 0.15s;
+}
+.topbar-close:hover { background: #fef2f2; color: #ef4444; }
+
+/* ── Mode Selection ──────────────────────────────────────── */
+
+.mode-select {
+  display: flex; gap: 12px; padding: 20px; max-width: 700px; margin: 0 auto;
+}
+.mode-card {
+  flex: 1; padding: 16px; border: 2px solid #e8e8ed; border-radius: 12px;
+  background: white; cursor: pointer; text-align: center;
+  transition: all 0.2s;
+}
+.mode-card:hover { border-color: #6366f1; box-shadow: 0 2px 8px rgba(99,102,241,0.1); }
+.mode-card.selected { border-color: #6366f1; background: rgba(99,102,241,0.04); }
+.mode-card .mode-icon { font-size: 28px; margin-bottom: 8px; }
+.mode-card .mode-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.mode-card .mode-desc { font-size: 12px; color: #888; }
+
+/* ── Manual Selection Table ──────────────────────────────── */
+
+.manual-table-wrap { padding: 0 20px 20px; max-width: 800px; margin: 0 auto; }
+.manual-table-wrap .tbl-search {
+  width: 100%; padding: 8px 12px; border: 1px solid #e0e0e0;
+  border-radius: 8px; font-size: 14px; margin-bottom: 8px;
+}
+.manual-table-wrap .tbl-count { font-size: 12px; color: #888; margin-bottom: 8px; }
+.manual-table-wrap table {
+  width: 100%; border-collapse: collapse; font-size: 13px;
+}
+.manual-table-wrap th {
+  text-align: left; padding: 8px 10px; border-bottom: 2px solid #e0e0e0;
+  cursor: pointer; user-select: none; color: #888; font-weight: 600;
+  font-size: 12px;
+}
+.manual-table-wrap th:hover { color: #6366f1; }
+.manual-table-wrap th .sort-arrow { font-size: 10px; margin-left: 2px; }
+.manual-table-wrap td { padding: 6px 10px; border-bottom: 1px solid #f0f0f0; }
+.manual-table-wrap tr:hover { background: rgba(99,102,241,0.03); }
+.manual-table-wrap tr.selected { background: rgba(99,102,241,0.08); }
+.manual-table-wrap .row-checkbox { width: 20px; }
+
+/* ── Count Slider ────────────────────────────────────────── */
+
+.count-slider { display: flex; align-items: center; gap: 8px; padding: 8px 0; }
+.count-slider input[type="range"] { flex: 1; max-width: 200px; accent-color: #6366f1; }
+.count-slider span { font-size: 14px; font-weight: 600; color: #6366f1; }
+
+/* ── Start Button ────────────────────────────────────────── */
+
+.btn-start {
+  display: block; margin: 16px auto;
+  padding: 10px 40px; border: none; border-radius: 10px;
+  background: #6366f1; color: white; font-size: 16px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s;
+}
+.btn-start:hover { background: #5558e6; }
+.btn-start:disabled { background: #ccc; cursor: default; }
+
+/* ── Card Flip ───────────────────────────────────────────── */
+
+.card-stage {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 40px 20px; max-width: 500px; margin: 0 auto;
+}
+.card-flip {
+  width: 100%; min-height: 260px;
+  perspective: 800px; cursor: pointer;
+}
+.card-inner {
+  position: relative; width: 100%; min-height: 260px;
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-style: preserve-3d;
+}
+.card-inner.flipped { transform: rotateY(180deg); }
+.card-front, .card-back {
+  position: absolute; inset: 0;
+  backface-visibility: hidden;
+  border-radius: 16px; padding: 32px 24px;
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center;
+  background: white; box-shadow: 0 4px 24px rgba(0,0,0,0.08);
+}
+.card-back { transform: rotateY(180deg); }
+
+.card-word {
+  font-size: 32px; font-weight: 700; color: #1a1a2e;
+  letter-spacing: 0.5px; margin-bottom: 8px;
+}
+.card-hint { font-size: 13px; color: #aaa; }
+.card-back .card-word { font-size: 26px; margin-bottom: 16px; }
+.card-phonetic { font-size: 16px; color: #888; font-family: "Lucida Sans Unicode", sans-serif; margin-bottom: 12px; }
+.card-defs { font-size: 15px; color: #333; line-height: 1.6; text-align: center; margin-bottom: 12px; }
+.card-level { font-size: 12px; color: #aaa; margin-bottom: 8px; }
+.card-level .lv { font-weight: 700; color: #6366f1; }
+.card-example { font-size: 13px; color: #666; font-style: italic; text-align: center; max-width: 380px; line-height: 1.4; }
+
+/* ── Actions ─────────────────────────────────────────────── */
+
+.card-actions {
+  display: flex; gap: 12px; margin-top: 24px; flex-wrap: wrap; justify-content: center;
+}
+.btn-action {
+  padding: 10px 24px; border: 2px solid #e0e0e0; border-radius: 12px;
+  background: white; cursor: pointer; font-size: 15px; font-weight: 600;
+  transition: all 0.15s;
+}
+.btn-action:hover { border-color: #6366f1; }
+.btn-action.know { border-color: #22c55e; color: #22c55e; }
+.btn-action.know:hover { background: #f0fdf4; }
+.btn-action.dunno { border-color: #ef4444; color: #ef4444; }
+.btn-action.dunno:hover { background: #fef2f2; }
+
+/* Spell input */
+.spell-input {
+  width: 200px; padding: 8px 12px; border: 2px solid #e0e0e0;
+  border-radius: 8px; font-size: 16px; text-align: center;
+  transition: all 0.15s;
+}
+.spell-input:focus { outline: none; border-color: #6366f1; }
+.spell-input.correct { border-color: #22c55e; background: #f0fdf4; }
+.spell-input.partial { border-color: #f59e0b; background: #fffbeb; }
+.spell-input.wrong { border-color: #ef4444; background: #fef2f2; }
+.spell-feedback { margin-top: 8px; font-size: 13px; text-align: center; }
+.spell-feedback .diff-highlight { background: #fde68a; padding: 1px 3px; border-radius: 2px; }
+
+/* ── Progress ────────────────────────────────────────────── */
+
+.progress-bar {
+  width: 100%; height: 4px; background: #e8e8ed; border-radius: 2px;
+  margin-top: 20px; overflow: hidden;
+}
+.progress-bar .fill {
+  height: 100%; background: #6366f1; border-radius: 2px; transition: width 0.3s;
+}
+.progress-text { font-size: 12px; color: #888; margin-top: 6px; text-align: center; }
+
+/* ── Complete ────────────────────────────────────────────── */
+
+.complete-card {
+  text-align: center; padding: 60px 20px; max-width: 400px; margin: 0 auto;
+}
+.complete-card .complete-icon { font-size: 56px; margin-bottom: 16px; }
+.complete-card .complete-title { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.complete-card .complete-stats { font-size: 14px; color: #888; line-height: 1.8; }
+
+/* ── Learning Nav Arrows ─────────────────────────────────── */
+
+.learn-nav {
+  position: fixed; top: 50%; left: 0; right: 0; z-index: 50;
+  display: flex; align-items: center; justify-content: space-between;
+  pointer-events: none; transform: translateY(-50%);
+}
+.nav-arrow {
+  width: 48px; height: 80px; border: none; border-radius: 0 8px 8px 0;
+  background: rgba(0,0,0,0.03); cursor: pointer; font-size: 28px;
+  color: #ccc; display: flex; align-items: center; justify-content: center;
+  transition: all 0.2s; pointer-events: auto;
+}
+.nav-prev { border-radius: 0 8px 8px 0; }
+.nav-next { border-radius: 8px 0 0 8px; }
+.nav-arrow:hover { background: rgba(99,102,241,0.1); color: #6366f1; }
+.nav-spacer { flex: 1; }
+
+/* ─── Achievement — Apple Photos Timeline Style ─────────── */
+
+.achieve-topbar {
+  display: flex; align-items: center; padding: 20px 24px 8px;
+  max-width: 760px; margin: 0 auto;
+}
+.achieve-title { font-size: 28px; font-weight: 800; color: #1a1a2e; letter-spacing: -0.5px; }
+.achieve-eye-btn {
+  margin-left: auto; width: 36px; height: 36px; border: none;
+  border-radius: 50%; background: transparent; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  color: #888; transition: all 0.15s;
+}
+.achieve-eye-btn:hover { background: rgba(0,0,0,0.05); color: #333; }
+
+.achieve-grid { max-width: 760px; margin: 0 auto; padding: 0 24px 40px; }
+.achieve-lv-section { margin-bottom: 28px; }
+.achieve-lv-header { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.achieve-lv-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.achieve-lv-label { font-size: 13px; font-weight: 600; color: #888; text-transform: uppercase; letter-spacing: 0.5px; }
+.achieve-lv-count { font-size: 12px; color: #bbb; }
+
+.achieve-lv-cards { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.achieve-card {
+  width: 210px; padding: 14px 16px; border-radius: 14px;
+  background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.03);
+  border: 1px solid #f5f5f5; transition: all 0.2s;
+}
+.achieve-card:hover { box-shadow: 0 4px 12px rgba(0,0,0,0.06); transform: translateY(-1px); }
+.achieve-card-word { font-size: 16px; font-weight: 700; color: #1a1a2e; margin-bottom: 6px; }
+.achieve-card-meta { display: flex; gap: 8px; flex-wrap: wrap; font-size: 11px; margin-bottom: 6px; }
+.achieve-card-pos { color: #6366f1; font-weight: 600; }
+.achieve-card-phonetic { color: #999; font-family: "Lucida Sans Unicode",sans-serif; }
+.achieve-card-exam { color: #e67e22; font-weight: 600; }
+.achieve-card-defs { font-size: 13px; color: #666; line-height: 1.5; }
+.achieve-card-defs.hidden { display: none; }

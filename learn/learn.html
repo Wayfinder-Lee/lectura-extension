@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LECTURA 学习</title>
+  <link rel="stylesheet" href="learn.css">
+</head>
+<body>
+
+  <!-- Top Bar -->
+  <div class="topbar">
+    <div class="topbar-logo">📖 LECTURA 学习</div>
+    <div class="topbar-tabs" id="topbarTabs">
+      <button class="topbar-tab active" data-view="learn">学习</button>
+      <button class="topbar-tab" data-view="achieve">成就</button>
+    </div>
+    <div class="topbar-spacer"></div>
+    <button class="topbar-close" id="btnClose" title="关闭">✕</button>
+  </div>
+
+  <!-- Learn View -->
+  <div id="viewLearn">
+    <div class="mode-select" id="modeSelect"></div>
+    <div id="modeOptions"></div>
+
+    <!-- Learning Navigation (prev/next arrows) -->
+    <div class="learn-nav" id="learnNav" style="display:none">
+      <button class="nav-arrow nav-prev" id="btnPrev" title="上一张">&lt;</button>
+      <div class="nav-spacer"></div>
+      <button class="nav-arrow nav-next" id="btnNext" title="下一张" style="display:none">&gt;</button>
+    </div>
+
+    <!-- Card Stage -->
+    <div class="card-stage" id="cardStage" style="display:none"></div>
+    <div id="progressArea" style="display:none"></div>
+  </div>
+
+  <!-- Achievement View -->
+  <div id="viewAchieve" style="display:none">
+    <div id="achieveContent"></div>
+  </div>
+
+  <script src="learn.js" type="module"></script>
+</body>
+</html>

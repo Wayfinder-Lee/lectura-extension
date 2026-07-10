@@ -56,11 +56,25 @@ function setupContextMenu() {
       type: 'radio',
       contexts: ['action']
     });
+    chrome.contextMenus.create({
+      id: 'separator',
+      type: 'separator',
+      contexts: ['action']
+    });
+    chrome.contextMenus.create({
+      id: 'open-learn',
+      title: '📖 学习词汇',
+      contexts: ['action']
+    });
   });
 }
 
-// Handle context menu clicks → store preference
+// Handle context menu clicks
 chrome.contextMenus.onClicked.addListener(async (info) => {
+  if (info.menuItemId === 'open-learn') {
+    chrome.tabs.create({ url: chrome.runtime.getURL('learn/learn.html') });
+    return;
+  }
   const modeMap = {
     'selection-direct': 'direct',
     'selection-bubble': 'bubble',
@@ -71,8 +85,6 @@ chrome.contextMenus.onClicked.addListener(async (info) => {
     const settings = await getSettings();
     settings.selectionMode = mode;
     await saveSettings(settings);
-
-    // Notify all tabs
     notifyAllTabs('SELECTION_MODE_CHANGED', { mode });
   }
 });
@@ -249,6 +261,17 @@ async function handleMessage(message, sender) {
       return { success: false, error: '词典未收录，且未配置 LLM' };
     }
 
+    // ── Learning ──────────────────────────────────────
+    case 'UPDATE_LEARNING': {
+      const { wordId, level, todayProgress, todayDate, mastered, lastStudyDate } = payload;
+      await updateWord(wordId, {
+        level, todayProgress, todayDate,
+        mastered: mastered !== undefined ? mastered : undefined,
+        lastStudyDate
+      });
+      return { success: true };
+    }
+
     case MSG.FETCH_EXAMPLES: {
       const { word, definitions } = payload;
       const settings = await getSettings();
@@ -378,6 +401,23 @@ async function substituteTemplate(templateMessages, vars) {
 }
 
 // ─── Side Panel Control ──────────────────────────────────────
+
+// ─── Keyboard Shortcut ──────────────────────────────────────
+
+chrome.commands.onCommand.addListener(async (command) => {
+  if (command === 'toggle-side-panel') {
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (tab?.windowId) {
+      try {
+        await chrome.sidePanel.open({ windowId: tab.windowId });
+      } catch {
+        // Side panel might already be open — no close API, so we just open
+      }
+    }
+  }
+});
+
+// ─── Action Click ───────────────────────────────────────────
 
 chrome.action.onClicked.addListener(async (tab) => {
   try {

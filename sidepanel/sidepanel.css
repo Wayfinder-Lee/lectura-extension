@@ -113,6 +113,17 @@ body {
   color: var(--color-text);
 }
 
+.toolbar-btn-learn {
+  width: auto;
+  padding: 0 10px;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #6366f1;
+}
+.toolbar-btn-learn:hover { background: rgba(99,102,241,0.08); }
+.toolbar-btn-label { flex-shrink: 0; }
+
 .toolbar-divider {
   width: 1px;
   height: 16px;

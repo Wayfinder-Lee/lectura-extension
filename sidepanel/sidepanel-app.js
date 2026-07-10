@@ -147,6 +147,11 @@ function setupToolbar() {
     });
   });
 
+  // Learn page
+  document.getElementById('btnLearn').addEventListener('click', () => {
+    chrome.tabs.create({ url: chrome.runtime.getURL('learn/learn.html') });
+  });
+
   // Reading mode (toggle)
   let isReadingMode = false;
   el('btnReadingMode').addEventListener('click', async () => {
